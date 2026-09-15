@@ -3,7 +3,6 @@ import "./styles/theme.css";
 import { Heading } from "./components/Heading";
 
 export function App() {
-  console.log("Oi");
   return (
     <>
       <Heading attr={123} attr2="String">
