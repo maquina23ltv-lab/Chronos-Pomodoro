@@ -1,5 +1,45 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
+import { TaskStateModel } from "../../models/TaskStateModel";
 
-export const TaskContext = createContext({
-  chave: "valor",
-});
+const initialState: TaskStateModel = {
+  tasks: [],
+  secondsRemaining: 0,
+  formattedSecondsRemaining: "00:00",
+  activeTask: null,
+  currentCycle: 0,
+  config: {
+    workTime: 25,
+    shortBreakTime: 5,
+    longBreakTime: 15,
+  },
+};
+
+type TaskContextProps = {
+  state: TaskStateModel;
+  setState: React.Dispatch<React.SetStateAction<TaskStateModel>>;
+};
+
+const initialContextValue = {
+  state: initialState,
+  setState: () => {},
+};
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const TaskContext = createContext<TaskContextProps>(initialContextValue);
+
+type TaskContextProviderProps = {
+  children: React.ReactNode;
+};
+
+export function TaskContextProvider({ children }: TaskContextProviderProps) {
+  return (
+    <TaskContext.Provider value={{ ...initialContextValue }}>
+      {children}
+    </TaskContext.Provider>
+  );
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useTaskContext() {
+  return useContext(TaskContext);
+}
