@@ -7,8 +7,8 @@ import { TaskModel } from "../../models/TaskModel";
 import { useTaskContext } from "../../contexts/TaskContext/useTaskContext";
 import { getNextCycle } from "../../utils/getNextCycle";
 import { getNextCycleType } from "../../utils/getNextCycleType";
-import { Tips } from "../Tips";
 import { TaskActionTypes } from "../../contexts/TaskContext/TaskActions";
+import { Tips } from "../Tips";
 
 export function MainForm() {
   const { state, dispatch } = useTaskContext();
@@ -41,6 +41,19 @@ export function MainForm() {
     };
 
     dispatch({ type: TaskActionTypes.START_TASK, payload: newTask });
+
+    const worker = new Worker(
+      new URL("../../workers/timerWorker.js", import.meta.url),
+    );
+
+    worker.postMessage("FAVOR"); // Sim, posso fazer um favor
+    worker.postMessage("FALA_OI"); // OK: OI!
+    worker.postMessage("BLALBLA"); // Não entendi!
+    worker.postMessage("FECHAR"); // Tá bom, vou fechar
+
+    worker.onmessage = function (event) {
+      console.log("PRINCIPAL recebeu:", event.data);
+    };
   }
 
   function handleInterruptTask() {
