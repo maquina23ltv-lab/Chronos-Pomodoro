@@ -1,21 +1,34 @@
-self.onmessage = function (event) {
-  console.log("WORKER recebeu:", event.data);
+let isRunning = false;
+let timerId = null;
 
-  switch (event.data) {
-    case "FAVOR": {
-      self.postMessage("Sim, posso fazer um favor");
-      break;
+self.onmessage = function (event) {
+  console.log("Timer worker received message:", event.data);
+
+  if (isRunning) return;
+  isRunning = true;
+
+  const state = event.data;
+  const { activeTask, secondsRemaining } = state;
+  const endDate = activeTask.startDate + secondsRemaining * 1000;
+
+  function tick() {
+    const countDownSeconds = Math.max(
+      0,
+      Math.ceil((endDate - Date.now()) / 1000),
+    );
+
+    self.postMessage(countDownSeconds);
+    console.log("Timer worker tick:", countDownSeconds);
+
+    if (countDownSeconds === 0) {
+      console.log("Tarefa Encerrada");
+      clearTimeout(timerId);
+      isRunning = false;
+      return;
     }
-    case "FALA_OI": {
-      self.postMessage("OK: OI!");
-      break;
-    }
-    case "FECHAR": {
-      self.postMessage("Tá bom, vou fechar");
-      self.close();
-      break;
-    }
-    default:
-      self.postMessage("Não entendi");
+
+    timerId = setTimeout(tick, 1000);
   }
+
+  tick();
 };
