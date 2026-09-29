@@ -2,8 +2,6 @@ let isRunning = false;
 let timerId = null;
 
 self.onmessage = function (event) {
-  console.log("Timer worker received message:", event.data);
-
   if (isRunning) return;
   isRunning = true;
 
@@ -20,7 +18,6 @@ self.onmessage = function (event) {
     self.postMessage(countDownSeconds);
 
     if (countDownSeconds === 0) {
-      console.log("Tarefa Encerrada");
       clearTimeout(timerId);
       isRunning = false;
       return;
