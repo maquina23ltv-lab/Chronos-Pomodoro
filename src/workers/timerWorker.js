@@ -18,7 +18,6 @@ self.onmessage = function (event) {
     );
 
     self.postMessage(countDownSeconds);
-    console.log("Timer worker tick:", countDownSeconds);
 
     if (countDownSeconds === 0) {
       console.log("Tarefa Encerrada");
